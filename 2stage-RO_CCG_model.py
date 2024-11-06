@@ -20,10 +20,8 @@ MP = gp.Model()  # Creates a Gurobi model.
 # Minimize 400 y[0] + 414 y[1] + 326 y[2] + 18 z[0] + 25 z[1] + 20 z[2] + \eta
 # Decision variables for the master problem:
 x = MP.addVars(3, 3, lb=0, vtype=GRB.CONTINUOUS, name='x_0')  # A 3x3 matrix of continuous variables.
-y = MP.addVars(len(f), lb=0, ub=1, obj=f, vtype=GRB.BINARY,
-               name='y')  # Binary variables (0 or 1) with objective coefficients f
-z = MP.addVars(len(a), lb=0, obj=a, vtype=GRB.CONTINUOUS,
-               name='z')  # Continuous variables with objective coefficients a.
+y = MP.addVars(len(f), lb=0, ub=1, obj=f, vtype=GRB.BINARY,name='y')  # Binary variables (0 or 1) with objective coefficients f
+z = MP.addVars(len(a), lb=0, obj=a, vtype=GRB.CONTINUOUS,name='z')  # Continuous variables with objective coefficients a.
 g = MP.addVars(3, lb=0, ub=1, name='g')  # Continuous variables representing uncertainty in demand ranging from [0,1]
 d = MP.addVars(3, lb=0, name='d')  # Continuous variables for demand.
 eta = MP.addVar(obj=1, lb=0,
