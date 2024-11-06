@@ -7,6 +7,7 @@ import scipy.sparse as sp
 # Constant Setting
 f = [400, 414, 326]  # Coefficients of the objective function for variable y (binary variables)
 a = [18, 25, 20]  # Coefficients of the objective function for variable z (continuous variables)
+K = [800, 800, 800]
 C = [[22, 33, 24],
      [33, 23, 30],
      [20, 25, 27]]  # Cost matrix for x variables
@@ -28,10 +29,10 @@ eta = MP.addVar(obj=1, lb=0,
                 name='η')  # A continuous variable in the master problem with an objective coefficient of 1.
 
 # Constraints
-MP_Cons_1 = MP.addConstrs((z[i] <= 800 * y[i] for i in range(3)),
+MP_Cons_1 = MP.addConstrs((z[i] <= K[i] * y[i] for i in range(3)),
                           name='MP_Cons_1')  # For each y[i], it imposes a constraint that z[i] <= 800*y[i].
 MP_Cons_2 = MP.addConstr((gp.quicksum(z[i] for i in range(3)) >= 772),
-                         name='MP_Cons_2')  # Total z[i] values must be at least 772. (Ensures SP2 has feasible region)
+                         name='MP_Cons_2')  # Total z[i] values must be at least 772. (Ensures SP2 has feasible region even at the worst-case)
 
 # iteration constraints
 MP_Cons_3 = MP.addConstrs((gp.quicksum(x[i, j] for j in range(3)) <= z[i] for i in range(3)),
@@ -113,6 +114,7 @@ print(UB)
 
 ############################# CCG START ###########################################
 while np.abs(UB - LB) > 1e-5:
+    print(f"The {k}th iteration")
     k = k + 1
     # Master-problem
     x_new = MP.addVars(3, 3, lb=0, vtype=GRB.CONTINUOUS, name='x_{0}'.format(k))
@@ -124,7 +126,7 @@ while np.abs(UB - LB) > 1e-5:
                                name='MP_Cons_eta_{}'.format(k))  # new "cutting plane added"
     MP.optimize()
     LB = max(LB, MP.objval)
-    print(LB)
+    print(f"LB: {LB}")
 
     # Sub-problem update
     # delete old constraints which related to z
@@ -139,7 +141,7 @@ while np.abs(UB - LB) > 1e-5:
 
     SP.optimize()
     UB = LB - eta.x + SP.objval
-    print(UB)
+    print(f"UB: {UB}")
 ############################# CCG END ###########################################
 
 # Some information
