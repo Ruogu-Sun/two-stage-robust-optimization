@@ -179,9 +179,9 @@ while abs(UB-LB) >= epsilon:
     UB = min(UB, f@y.x+a@z.x+SP_obj)
     k += 1
     # go back to the MP
-    print("经过{}次迭代".format(k))
-    print("上界为：{}".format(UB))
-    print("下界为：{}".format(LB))
+    print("With {} iterations".format(k))
+    print("UB：{}".format(UB))
+    print("LB：{}".format(LB))
     kk.append(k)
     lb.append(LB)
     ub.append(UB)
@@ -193,16 +193,13 @@ print(x)
 
 plt.figure(figsize=(10, 6))
 
-# 绘制 lb 和 ub 的线
 sns.lineplot(x=kk, y=lb, label='Lower Bound (lb)', color='blue', marker='o')
 sns.lineplot(x=kk, y=ub, label='Upper Bound (ub)', color='orange', marker='o')
 
-# 添加标题和标签
 plt.title('Line Plot of lb and ub')
 plt.xlabel('k')
 plt.ylabel('Values')
 plt.legend()
 
-# 显示图形
 plt.grid()
 plt.show()

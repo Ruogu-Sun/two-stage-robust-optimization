@@ -136,3 +136,7 @@ def generate_h(m,n,d_bot):
         return np.concatenate((block1,block2))
     else:raise ValueError
 ```
+
+## Uncertainty
+The value of Γ represents the maximum range of the uncertain demands that can simultaneously deviate from
+their nominal values. As the uncertainty is on the right hand sides (demands), Γ belongs to [0, n].
