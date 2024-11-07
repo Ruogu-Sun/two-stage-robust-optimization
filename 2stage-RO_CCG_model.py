@@ -3,6 +3,8 @@ import gurobipy as gp
 from gurobipy import GRB
 import numpy as np
 import scipy.sparse as sp
+import seaborn as sns
+import matplotlib.pyplot as plt
 
 # Constant Setting
 f = [400, 414, 326]  # Coefficients of the objective function for variable y (binary variables)
@@ -111,7 +113,12 @@ UB = LB - eta.x + SP_objval
 print(UB)
 ############################# SUB PROBLEM END ###########################################
 
-
+lb=[]
+ub=[]
+kk=[]
+lb.append(LB)
+ub.append(UB)
+kk.append(k)
 ############################# CCG START ###########################################
 while np.abs(UB - LB) > 1e-5:
     print(f"The {k}th iteration")
@@ -142,6 +149,9 @@ while np.abs(UB - LB) > 1e-5:
     SP.optimize()
     UB = LB - eta.x + SP.objval
     print(f"UB: {UB}")
+    kk.append(k)
+    lb.append(LB)
+    ub.append(UB)
 ############################# CCG END ###########################################
 
 # Some information
@@ -152,3 +162,22 @@ print(z[0], z[1], z[2])
 for i in range(3):
     for j in range(3):
         print(x_new[i, j])
+print(k)
+
+print(lb,ub,kk)
+
+plt.figure(figsize=(10, 6))
+
+# 绘制 lb 和 ub 的线
+sns.lineplot(x=kk, y=lb, label='Lower Bound (lb)', color='blue', marker='o')
+sns.lineplot(x=kk, y=ub, label='Upper Bound (ub)', color='orange', marker='o')
+
+# 添加标题和标签
+plt.title('Line Plot of lb and ub')
+plt.xlabel('k')
+plt.ylabel('Values')
+plt.legend()
+
+# 显示图形
+plt.grid()
+plt.show()
